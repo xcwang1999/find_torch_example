@@ -27,6 +27,7 @@ execute_process(
 string(REGEX REPLACE "__init__.py$" "" TORCH_PATH "${TORCH_PATH}")
 set(Torch_DIR "${TORCH_PATH}/share/cmake/Torch")
 find_package(Torch REQUIRED)
+find_library(TORCH_PYTHON_LIBRARY torch_python PATH "${TORCH_INSTALL_PREFIX}/lib")
 
 find_package(Git REQUIRED)
 if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
@@ -45,14 +46,17 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 
 add_subdirectory(third-party/pybind11)
 
-add_executable(torch_cmake_example main.cpp)
+add_library(torch_cmake_example SHARED torch_add.cpp bindings.cpp)
 
-target_include_directories(torch_cmake_example PUBLIC 
+target_include_directories(torch_cmake_example PRIVATE 
         ${PYTHON_INCLUDE_DIR}
         )
 
-target_link_libraries(torch_cmake_example PUBLIC 
+target_link_libraries(torch_cmake_example PRIVATE 
         ${TORCH_LIBRARIES}
+        ${TORCH_PYTHON_LIBRARY}
         pybind11::pybind11
         Python3::Python
         )
+
+set_target_properties(torch_cmake_example PROPERTIES PREFIX "")
