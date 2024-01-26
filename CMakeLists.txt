@@ -4,7 +4,7 @@ project(torch_cmake_example)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Python3 COMPONENTS Interpreter REQUIRED)
+find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
 
 execute_process(
     COMMAND "${Python3_EXECUTABLE}" -c "import sysconfig; print(sysconfig.get_path('include'))"
@@ -12,22 +12,10 @@ execute_process(
     OUTPUT_STRIP_TRAILING_WHITESPACE
 )
 
-execute_process(
-    COMMAND "${Python3_EXECUTABLE}" -c "import sysconfig; print(sysconfig.get_path('stdlib'))"
-    OUTPUT_VARIABLE PYTHON_LIBRARIES
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-)
-
 if(PYTHON_INCLUDE_DIR EQUAL "")
     message(FATAL_ERROR "Can not find Python include directory.")
 else()
     message(STATUS "Python include dir: ${PYTHON_INCLUDE_DIR}")
-endif()
-
-if(PYTHON_LIBRARIES EQUAL "")
-    message(FATAL_ERROR "Can not find Python libraries.")
-else()
-    message(STATUS "Python libraries: ${PYTHON_LIBRARIES}")
 endif()
 
 execute_process(
@@ -65,6 +53,6 @@ target_include_directories(torch_cmake_example PUBLIC
 
 target_link_libraries(torch_cmake_example PUBLIC 
         ${TORCH_LIBRARIES}
-        ${PYTHON_LIBRARIES}
         pybind11::pybind11
+        Python3::Python
         )
