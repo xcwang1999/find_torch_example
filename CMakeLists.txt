@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.25)
 project(find_torch_example)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 find_package(Python3 COMPONENTS Interpreter REQUIRED)
 
 execute_process(
@@ -12,8 +15,6 @@ execute_process(
 string(REGEX REPLACE "__init__.py$" "" TORCH_PATH "${TORCH_PATH}")
 set(Torch_DIR "${TORCH_PATH}/share/cmake/Torch")
 find_package(Torch REQUIRED)
-
-include_directories(${TORCH_PATH}/include)
 
 add_executable(find_torch_example main.cpp)
 
