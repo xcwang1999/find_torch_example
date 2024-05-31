@@ -46,7 +46,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 
 add_subdirectory(third-party/pybind11)
 
-add_library(torch_cmake_example SHARED torch_add.cpp bindings.cpp)
+pybind11_add_module(torch_cmake_example MODULE THIN_LTO torch_add.cpp bindings.cpp)
 
 target_include_directories(torch_cmake_example PRIVATE 
         ${PYTHON_INCLUDE_DIR}
@@ -58,5 +58,3 @@ target_link_libraries(torch_cmake_example PRIVATE
         pybind11::pybind11
         Python3::Python
         )
-
-set_target_properties(torch_cmake_example PROPERTIES PREFIX "")
